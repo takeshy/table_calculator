@@ -24,6 +24,8 @@ function calc(formulas: Formula[], operator: Action.Operator, num: number) {
       return result + num;
     case "-":
       return result - num;
+    case "×":
+      return result * num;
     default:
       return NaN;
   }

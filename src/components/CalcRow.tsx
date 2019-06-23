@@ -1,6 +1,6 @@
 import React from "react";
 
-export type Operator = "+" | "-";
+export type Operator = "+" | "-" | "×";
 export interface Formula {
   id: number;
   operator: Operator;
@@ -25,7 +25,7 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
     return (
       <tr>
         <td />
-        <td style={{ width: "120px" }}>
+        <td style={{ width: "180px" }}>
           <form
             className="pure-form"
             onSubmit={e => {
@@ -50,6 +50,15 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
               checked={props.formula.operator === "-"}
               onChange={() => props.changeOperator("-")}
             />
+            <label style={style} htmlFor={"minus"}>
+              ×
+            </label>
+            <input
+              type="radio"
+              id="multi"
+              checked={props.formula.operator === "×"}
+              onChange={() => props.changeOperator("×")}
+            />
           </form>
         </td>
         <td>
@@ -68,6 +77,8 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
                   props.changeOperator("-");
                 } else if (e.target.value === "+") {
                   props.changeOperator("+");
+                } else if (e.target.value === "×") {
+                  props.changeOperator("×");
                 } else if (Number(e.target.value)) {
                   props.changeNum(Number(e.target.value));
                 }

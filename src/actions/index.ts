@@ -1,7 +1,7 @@
 export const CHANGE_OPERATOR = "CHANGE_OPERATOR";
 export const CHANGE_NUM = "CHANGE_NUM";
 export const APPEND_ROW = "APPEND_ROW";
-export type Operator = "+" | "-";
+export type Operator = "+" | "-" | "×";
 
 export const changeOperator = (operator: Operator) => {
   return {
