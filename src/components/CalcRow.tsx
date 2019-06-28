@@ -56,6 +56,7 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
           <form className="pure-form" onSubmit={handleSubmit}>
             <input
               type="text"
+              autoComplete="off"
               ref={itemEl}
               style={{ width: "130px" }}
               value={props.formula.item}
@@ -68,7 +69,8 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
         <td>
           <form className="pure-form" onSubmit={handleSubmit}>
             <input
-              type="text"
+              type="number"
+              autoComplete="off"
               value={props.formula.strNum}
               style={{ width: "100px" }}
               ref={numEl}
@@ -84,7 +86,7 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
                   props.setFormula({
                     ...props.formula,
                     num: num,
-                    strNum: delimitalize(num)
+                    strNum: e.target.value
                   });
                 }
               }}
