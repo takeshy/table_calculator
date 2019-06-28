@@ -43,15 +43,7 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
   return (
     <>
       <tr>
-        <td>
-          {props.formula.id ? (
-            <button onClick={props.cancel} className="btn secondary">
-              キャンセル
-            </button>
-          ) : (
-            ""
-          )}
-        </td>
+        <td />
         <td>
           <form className="pure-form" onSubmit={handleSubmit}>
             <input
@@ -71,7 +63,7 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
             <input
               type="number"
               autoComplete="off"
-              value={props.formula.strNum}
+              value={props.formula.num}
               style={{ width: "100px" }}
               ref={numEl}
               onChange={e => {
@@ -111,6 +103,13 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
           <button onClick={handleSubmit} className="btn primary">
             保存
           </button>
+          {props.formula.id ? (
+            <button onClick={props.cancel} className="btn secondary">
+              キャンセル
+            </button>
+          ) : (
+            ""
+          )}
         </td>
       </tr>
     </>

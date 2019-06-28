@@ -27,7 +27,7 @@ const initFormula: EditFormula = {
   num: 0,
   item: "",
   remark: "",
-  strNum: delimitalize(0)
+  strNum: "0"
 };
 
 type Condition = {
@@ -69,7 +69,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
   const editRow = (f: Formula) => {
     setEditFormula({
       ...f,
-      strNum: delimitalize(f.num)
+      strNum: f.num.toString()
     });
   };
   const sortNumber = () => {
