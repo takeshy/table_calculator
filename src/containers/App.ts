@@ -6,7 +6,8 @@ import { Formula, StoreState } from "../types/state";
 
 export const mapStateToProps = function(state: StoreState): AppStateProps {
   return {
-    formulas: state.formulas
+    formulas: state.formulas,
+    isVisible: state.auth.recovered
   };
 };
 

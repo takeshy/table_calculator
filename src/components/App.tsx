@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useRef } from "react";
 import "../styles/pure.css";
 import CalcRow, { EditFormula } from "./CalcRow";
 import { Formula } from "../types/state";
@@ -12,6 +12,7 @@ export interface AppProcProps {
   removeRow: (id: number) => void;
 }
 export interface AppStateProps {
+  isVisible: boolean;
   formulas: Formula[];
 }
 interface AppProps extends AppProcProps, AppStateProps {}
@@ -39,7 +40,12 @@ const App: React.FC<AppProps> = (props: AppProps) => {
   const [editFormula, setEditFormula] = useState(initFormula);
   const [sort, setSort] = useState(initSort as Sort);
   const [condition, setCondition] = useState(initialCondition);
+  const [blob, setBlob] = useState<Blob | null>(null);
+  const csvEl = useRef<HTMLInputElement>(null);
 
+  if (!props.isVisible) {
+    return <h2>データ読み込み中</h2>;
+  }
   const save = (f: Formula) => {
     if (f.id) {
       props.updateRow(f);
@@ -170,6 +176,79 @@ const App: React.FC<AppProps> = (props: AppProps) => {
           )}
         </tbody>
       </table>
+      <br />
+      <form className="pure-form" onSubmit={e => e.preventDefault()}>
+        <button
+          onClick={() => {
+            if (window.confirm("本当に全てのデータをクリアしていいですか？")) {
+              props.formulas.forEach(f => {
+                removeRow(f.id);
+              });
+            }
+          }}
+        >
+          全データクリア
+        </button>
+        <button
+          onClick={() => {
+            const data = props.formulas
+              .map(f => {
+                return `${f.id},${f.item},${f.num},${f.remark}`;
+              })
+              .join("\r\n");
+            let bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+            let b = new Blob([bom, data], { type: "text/csv" });
+            setBlob(b);
+          }}
+        >
+          CSVデータ作成
+        </button>
+        {blob && (
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={window.URL.createObjectURL(blob)}
+            onClick={() => setTimeout(() => setBlob(null), 100)}
+          >
+            CSVダウンロード
+          </a>
+        )}
+        <button
+          type="button"
+          onClick={() => {
+            csvEl.current && csvEl.current.click();
+          }}
+        >
+          CSVデータ読み込み
+        </button>
+        <input
+          ref={csvEl}
+          name="csv"
+          type="file"
+          style={{ display: "none" }}
+          onChange={(e: any) => {
+            const file = e.currentTarget.files[0];
+            if (!file) {
+              return;
+            }
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.addEventListener("load", () => {
+              (reader.result as string).split(/\n/).forEach(r => {
+                // eslint-disable-next-line
+                const [_, item, num, remark] = r.split(",");
+                save({
+                  id: 0,
+                  operator: "+",
+                  item,
+                  num: Number(num),
+                  remark: remark
+                });
+              });
+            });
+          }}
+        />
+      </form>
     </>
   );
 };

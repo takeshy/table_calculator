@@ -9,6 +9,7 @@ export interface Formula {
 
 export interface Auth {
   id: string | null;
+  recovered: boolean;
 }
 
 export interface StoreState {

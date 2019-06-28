@@ -24,7 +24,7 @@ declare let window: CustomWindow;
 
 let composeEnhancers;
 let store: any;
-if (process.env.NODE_ENV === "production") {
+if (providerGoogle) {
   composeEnhancers = compose(applyMiddleware(thunk));
   store = createStore(reducer, {}, composeEnhancers);
   firebase.auth().onAuthStateChanged(user => {
@@ -32,7 +32,9 @@ if (process.env.NODE_ENV === "production") {
       store.dispatch(Action.loginSuccess(user.uid));
       store.dispatch(Action.fetchFormulas(user.uid) as any);
     } else {
-      firebase.auth().signInWithRedirect(providerGoogle);
+      firebase
+        .auth()
+        .signInWithRedirect(providerGoogle as firebase.auth.GoogleAuthProvider);
     }
   });
 } else {
@@ -42,10 +44,9 @@ if (process.env.NODE_ENV === "production") {
       ) as typeof compose)
     : compose(applyMiddleware(thunk, saveState));
   store = createStore(reducer, {}, composeEnhancers);
-  const state = sessionStorage.getItem("app_state");
-  if (state) {
-    store.dispatch(Action.recoverData(JSON.parse(state)));
-  }
+  const state = sessionStorage.getItem("app_state") || '{"formulas": []}';
+  store.dispatch(Action.recoverData(JSON.parse(state)));
+  store.dispatch(Action.loginSuccess("develop"));
 }
 ReactDOM.render(
   <Provider store={store}>
