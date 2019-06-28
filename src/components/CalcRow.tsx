@@ -1,92 +1,115 @@
-import React from "react";
+import React, { FormEvent, useRef, useEffect } from "react";
+import { Formula } from "../types/state";
+import { calcFormula, delimitalize } from "../lib/util";
 
-export type Operator = "+" | "-";
-export interface Formula {
-  id: number;
-  operator: Operator;
-  num: number;
-  result: number;
+export interface EditFormula extends Formula {
+  strNum: string;
 }
+
 export interface CalcRowProcProps {
-  changeOperator: (operator: Operator) => void;
-  changeNum: (num: number) => void;
-  appendRow: () => void;
+  setFormula: (formula: EditFormula) => void;
+  save: (formula: Formula) => void;
+  cancel: () => void;
 }
+
 export interface CalcRowStateProps {
-  formula: Formula;
+  result: number;
+  formula: EditFormula;
 }
-const style = {
-  fontWeight: "bold" as "bold",
-  margin: "10px"
-};
+
 interface CalcRowProps extends CalcRowProcProps, CalcRowStateProps {}
 const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
-  if (props.formula.id === 0) {
-    return (
+  const numEl = useRef<HTMLInputElement>(null);
+  const itemEl = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    itemEl.current && itemEl.current.focus();
+  }, [props.formula.item]);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (props.formula.num !== Number(props.formula.strNum.replace(/,/, ""))) {
+      alert("正しい数字をセットしてください");
+      numEl.current && numEl.current.focus();
+      return;
+    }
+    if (!props.formula.item) {
+      alert("名前をセットしてください");
+      itemEl.current && itemEl.current.focus();
+      return;
+    }
+    props.save(props.formula);
+  };
+  return (
+    <>
       <tr>
-        <td />
-        <td style={{ width: "120px" }}>
-          <form
-            className="pure-form"
-            onSubmit={e => {
-              e.preventDefault();
-            }}
-          >
-            <label style={style} htmlFor={"plus"}>
-              +
-            </label>
+        <td>
+          <button onClick={handleSubmit} className="btn primary">
+            保存
+          </button>
+          {props.formula.id ? (
+            <button onClick={props.cancel} className="btn secondary">
+              キャンセル
+            </button>
+          ) : (
+            ""
+          )}
+        </td>
+        <td>
+          <form className="pure-form" onSubmit={handleSubmit}>
             <input
-              type="radio"
-              id="plus"
-              checked={props.formula.operator === "+"}
-              onChange={() => props.changeOperator("+")}
-            />
-            <label style={style} htmlFor={"minus"}>
-              -
-            </label>
-            <input
-              type="radio"
-              id="minus"
-              checked={props.formula.operator === "-"}
-              onChange={() => props.changeOperator("-")}
+              type="text"
+              ref={itemEl}
+              style={{ width: "130px" }}
+              value={props.formula.item}
+              onChange={e => {
+                props.setFormula({ ...props.formula, item: e.target.value });
+              }}
             />
           </form>
         </td>
         <td>
-          <form
-            className="pure-form"
-            onSubmit={e => {
-              e.preventDefault();
-              props.appendRow();
-            }}
-          >
+          <form className="pure-form" onSubmit={handleSubmit}>
             <input
               type="text"
-              value={props.formula.num ? props.formula.num : ""}
+              value={props.formula.strNum}
+              style={{ width: "100px" }}
+              ref={numEl}
               onChange={e => {
-                if (e.target.value === "-") {
-                  props.changeOperator("-");
-                } else if (e.target.value === "+") {
-                  props.changeOperator("+");
-                } else if (Number(e.target.value)) {
-                  props.changeNum(Number(e.target.value));
+                const num = Number(e.target.value.replace(/,/g, ""));
+                if (isNaN(num)) {
+                  props.setFormula({
+                    ...props.formula,
+                    num: 0,
+                    strNum: e.target.value
+                  });
+                } else {
+                  props.setFormula({
+                    ...props.formula,
+                    num: num,
+                    strNum: delimitalize(num)
+                  });
                 }
               }}
             />
           </form>
         </td>
-        <td>{props.formula.result}</td>
+        <td>
+          <form className="pure-form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={props.formula.remark}
+              onChange={e => {
+                props.setFormula({ ...props.formula, remark: e.target.value });
+              }}
+            />
+          </form>
+        </td>
+        <td style={{ width: "80px" }}>
+          <div>{delimitalize(calcFormula(props.result, props.formula))}</div>
+        </td>
       </tr>
-    );
-  }
-  return (
-    <tr>
-      <td>{props.formula.id}</td>
-      <td>{props.formula.operator}</td>
-      <td>{props.formula.num}</td>
-      <td>{props.formula.result}</td>
-    </tr>
+    </>
   );
 };
-
 export default CalcRow;

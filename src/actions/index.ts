@@ -1,35 +1,34 @@
-export const CHANGE_OPERATOR = "CHANGE_OPERATOR";
-export const CHANGE_NUM = "CHANGE_NUM";
+import { Formula, StoreState } from "../types/state";
+export const RECOVER_DATA = "RECOVER_DATA";
 export const APPEND_ROW = "APPEND_ROW";
-export type Operator = "+" | "-";
+export const UPDATE_ROW = "UPDATE_ROW";
 
-export const changeOperator = (operator: Operator) => {
+export const recoverData = (state: StoreState) => {
   return {
-    // typescriptでstring型ではなく、この文字列の型に
-    // してしまうことでpayloadの型をreducerでチェックさせる
-    type: CHANGE_OPERATOR as typeof CHANGE_OPERATOR,
+    type: RECOVER_DATA as typeof RECOVER_DATA,
+    payload: { ...state }
+  };
+};
+
+export const appendRow = (formula: Formula) => {
+  return {
+    type: APPEND_ROW as typeof APPEND_ROW,
     payload: {
-      operator
+      formula
     }
   };
 };
 
-export const changeNum = (num: number) => {
+export const updateRow = (formula: Formula) => {
   return {
-    type: CHANGE_NUM as typeof CHANGE_NUM,
+    type: UPDATE_ROW as typeof UPDATE_ROW,
     payload: {
-      num
+      formula
     }
-  };
-};
-
-export const appendRow = () => {
-  return {
-    type: APPEND_ROW as typeof APPEND_ROW
   };
 };
 
 export type Actions =
-  | ReturnType<typeof changeOperator>
-  | ReturnType<typeof changeNum>
-  | ReturnType<typeof appendRow>;
+  | ReturnType<typeof recoverData>
+  | ReturnType<typeof appendRow>
+  | ReturnType<typeof updateRow>;
