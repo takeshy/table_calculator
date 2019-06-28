@@ -17,6 +17,9 @@ export default (state = initialState, action: Action.Actions): Formula[] => {
         }
       ];
     }
+    case Action.REMOVE_ROW: {
+      return state.filter(formula => formula.id !== action.payload.id);
+    }
     case Action.UPDATE_ROW: {
       return state.map(formula =>
         action.payload.formula.id === formula.id

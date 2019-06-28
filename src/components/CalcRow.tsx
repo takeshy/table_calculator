@@ -44,9 +44,6 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
     <>
       <tr>
         <td>
-          <button onClick={handleSubmit} className="btn primary">
-            保存
-          </button>
           {props.formula.id ? (
             <button onClick={props.cancel} className="btn secondary">
               キャンセル
@@ -107,6 +104,11 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
         </td>
         <td style={{ width: "80px" }}>
           <div>{delimitalize(calcFormula(props.result, props.formula))}</div>
+        </td>
+        <td>
+          <button onClick={handleSubmit} className="btn primary">
+            保存
+          </button>
         </td>
       </tr>
     </>

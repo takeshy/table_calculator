@@ -2,6 +2,7 @@ import { Formula, StoreState } from "../types/state";
 export const RECOVER_DATA = "RECOVER_DATA";
 export const APPEND_ROW = "APPEND_ROW";
 export const UPDATE_ROW = "UPDATE_ROW";
+export const REMOVE_ROW = "REMOVE_ROW";
 
 export const recoverData = (state: StoreState) => {
   return {
@@ -28,7 +29,15 @@ export const updateRow = (formula: Formula) => {
   };
 };
 
+export const removeRow = (id: number) => {
+  return {
+    type: REMOVE_ROW as typeof REMOVE_ROW,
+    payload: { id }
+  };
+};
+
 export type Actions =
   | ReturnType<typeof recoverData>
   | ReturnType<typeof appendRow>
-  | ReturnType<typeof updateRow>;
+  | ReturnType<typeof updateRow>
+  | ReturnType<typeof removeRow>;

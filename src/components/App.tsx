@@ -9,6 +9,7 @@ import style from "../styles/calculator.module.css";
 export interface AppProcProps {
   appendRow: (formula: Formula) => void;
   updateRow: (formula: Formula) => void;
+  removeRow: (id: number) => void;
 }
 export interface AppStateProps {
   formulas: Formula[];
@@ -46,6 +47,10 @@ const App: React.FC<AppProps> = (props: AppProps) => {
       props.appendRow(f);
     }
     setEditFormula(initFormula);
+  };
+
+  const removeRow = (id: number) => {
+    props.removeRow(id);
   };
   const cancel = () => {
     setEditFormula(initFormula);
@@ -122,6 +127,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
             </th>
             <th>備考</th>
             <th>累計</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -148,6 +154,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
                   formula={formula}
                   result={total}
                   editRow={editRow}
+                  removeRow={removeRow}
                 />
               );
             }
