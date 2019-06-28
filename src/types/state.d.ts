@@ -7,6 +7,11 @@ export interface Formula {
   remark: string;
 }
 
+export interface Auth {
+  id: string | null;
+}
+
 export interface StoreState {
   formulas: Formula[];
+  auth: Auth;
 }

@@ -14,9 +14,9 @@ export const mapDispatchToProps = function(
   dispatch: Dispatch<Action<{}>>
 ): AppProcProps {
   return {
-    appendRow: (formula: Formula) => dispatch(Act.appendRow(formula)),
-    updateRow: (formula: Formula) => dispatch(Act.updateRow(formula)),
-    removeRow: (id: number) => dispatch(Act.removeRow(id))
+    appendRow: (formula: Formula) => dispatch(Act.appendRow(formula) as any),
+    updateRow: (formula: Formula) => dispatch(Act.updateRow(formula) as any),
+    removeRow: (id: number) => dispatch(Act.removeRow(id) as any)
   };
 };
 
