@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, useRef } from "react";
 import "../styles/pure.css";
 import CalcRow, { EditFormula } from "./CalcRow";
 import { Formula } from "../types/state";
-import { calcFormula, delimitalize } from "../lib/util";
+import { calcFormula } from "../lib/util";
 import RecordRow from "./RecordRow";
 import style from "../styles/calculator.module.css";
 
@@ -27,7 +27,7 @@ const initFormula: EditFormula = {
   num: 0,
   item: "",
   remark: "",
-  strNum: "0"
+  strNum: ""
 };
 
 type Condition = {
@@ -69,7 +69,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
   const editRow = (f: Formula) => {
     setEditFormula({
       ...f,
-      strNum: f.num.toString()
+      strNum: f.num === 0 ? "" : f.num.toString()
     });
   };
   const sortNumber = () => {

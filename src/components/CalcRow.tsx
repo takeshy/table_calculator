@@ -63,24 +63,16 @@ const CalcRow: React.FC<CalcRowProps> = (props: CalcRowProps) => {
             <input
               type="number"
               autoComplete="off"
-              value={props.formula.num}
+              value={props.formula.strNum}
               style={{ width: "100px" }}
               ref={numEl}
               onChange={e => {
-                const num = Number(e.target.value.replace(/,/g, ""));
-                if (isNaN(num)) {
-                  props.setFormula({
-                    ...props.formula,
-                    num: 0,
-                    strNum: e.target.value
-                  });
-                } else {
-                  props.setFormula({
-                    ...props.formula,
-                    num: num,
-                    strNum: e.target.value
-                  });
-                }
+                const num = Number(e.target.value);
+                props.setFormula({
+                  ...props.formula,
+                  num: num,
+                  strNum: e.target.value
+                });
               }}
             />
           </form>
