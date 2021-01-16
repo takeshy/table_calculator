@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { diff } from "./libs/Util";
+import { reducer, Context, InitialState, AppState, Actions } from "./store";
+import ModalProvider from "./libs/ModalProvider";
+import TableCalculatorPage from "./pages/TableCalculatorPage";
+import { useReducer } from "react";
 
-function App() {
+const reducerForApp =
+  process.env.NODE_ENV === "production"
+    ? reducer
+    : (state: AppState, action: Actions) => {
+        console.groupCollapsed(action.type);
+        console.log("action", action);
+        const result = reducer(state, action);
+        console.log("diff", diff(state, result));
+        console.log("prevState", state);
+        console.log("currentState", result);
+        console.groupEnd();
+        return result;
+      };
+
+export const App = (props: any) => {
+  const [state, dispatch] = useReducer(reducerForApp, InitialState);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Context.Provider value={{ state, dispatch }}>
+      <ModalProvider>
+        <TableCalculatorPage />
+      </ModalProvider>
+    </Context.Provider>
   );
-}
+};
 
 export default App;
